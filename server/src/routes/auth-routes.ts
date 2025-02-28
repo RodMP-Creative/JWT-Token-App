@@ -17,7 +17,7 @@ export const login = async (req: Request, res: Response) => {
     console.log('User not found, creating new user');
     user = await User.create({ username, password });
     console.log('New user created');
-    res.status(201).json({ message: 'New user created' });
+    return res.status(201).json({ message: 'New user created' });
   } else {
     const passwordCheck = await bcrypt.compare(password, user.password);
 
