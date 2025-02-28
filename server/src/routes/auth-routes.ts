@@ -5,29 +5,40 @@ import bcrypt from 'bcrypt';
 
 export const login = async (req: Request, res: Response) => {
   // TODO: If the user exists and the password is correct, return a JWT token
-  const {username, password} = req.body;
+  const { username, password } = req.body;
 
-  const user = await User.findOne({where: {username}});
+  console.log(`Login attempt for username: ${username}`);
 
+  // Check if the user exists
+  const user = await User.findOne({ where: { username } });
+
+  // If the user does not exist, return an error
   if (!user) {
-    return res.status(401).json({error: 'Incorrect username or password'});
+    console.log('User not found');
+    return res.status(401).json({ error: 'Incorrect username or password' });
   }
 
   const passwordCheck = await bcrypt.compare(password, user.password);
 
+  // If the password does not match, return an error
   if (!passwordCheck) {
-    return res.status(401).json({error: 'Incorrect username or password'});
+    console.log('Password does not match');
+    return res.status(401).json({ error: 'Incorrect username or password' });
   }
 
   const secretKey = process.env.JWT_SECRET_KEY;
 
+  // If the JWT_SECRET_KEY is not set, return an error
   if (!secretKey) {
-    return res.status(500).json({error: 'server error'});
+    console.log('JWT_SECRET_KEY is not set');
+    return res.status(500).json({ error: 'server error' });
   }
 
-  const token = jwt.sign({username}, secretKey, {expiresIn: '2h'});
-  
-  return res.json({token});
+  // Generate a JWT token
+  const token = jwt.sign({ username }, secretKey, { expiresIn: '2h' });
+
+  console.log('Login successful, token generated');
+  return res.json({ token });
 };
 
 const router = Router();
