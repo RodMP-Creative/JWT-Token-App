@@ -5,8 +5,13 @@ dotenv.config();
 
 import express from 'express';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import routes from './routes/index.js';
 import { sequelize } from './models/index.js';
+
+// code is needed to get the __dirname variable in ES6 modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
