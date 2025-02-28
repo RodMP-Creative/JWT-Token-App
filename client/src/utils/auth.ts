@@ -40,13 +40,9 @@ class AuthService {
     return decoded.exp < currentTime;
   }
 
-  getToken(): string {
-    // Todo: Return the token from localStorage and navigate to login if undefined
+  getToken(): string | null {
+    // Return the token from localStorage
     const token = localStorage.getItem('token');
-    if (!token) {
-      this.navigate('/login');
-      return '';
-    }
     return token;
   }
 
