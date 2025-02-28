@@ -4,26 +4,28 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 export const login = async (req: Request, res: Response) => {
-  // TODO: If the user exists and the password is correct, return a JWT token
+// TODO: If the user exists and the password is correct, return a JWT token
   const { username, password } = req.body;
 
   console.log(`Login attempt for username: ${username}`);
 
   // Check if the user exists
-  const user = await User.findOne({ where: { username } });
+  let user = await User.findOne({ where: { username } });
 
-  // If the user does not exist, return an error
+  // If the user does not exist, create a new user
   if (!user) {
-    console.log('User not found');
-    return res.status(401).json({ error: 'Incorrect username or password' });
-  }
+    console.log('User not found, creating new user');
+    user = await User.create({ username, password });
+    console.log('New user created');
+    res.status(201).json({ message: 'New user created' });
+  } else {
+    const passwordCheck = await bcrypt.compare(password, user.password);
 
-  const passwordCheck = await bcrypt.compare(password, user.password);
-
-  // If the password does not match, return an error
-  if (!passwordCheck) {
-    console.log('Password does not match');
-    return res.status(401).json({ error: 'Incorrect username or password' });
+    // If the password does not match, return an error
+    if (!passwordCheck) {
+      console.log('Password does not match');
+      return res.status(401).json({ error: 'Incorrect username or password' });
+    }
   }
 
   const secretKey = process.env.JWT_SECRET_KEY;
