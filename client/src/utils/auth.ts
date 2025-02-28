@@ -52,7 +52,7 @@ class AuthService {
   getToken(): string | null {
     // Return the token from localStorage
     const token = localStorage.getItem('token');
-    if (!token) {
+    if (!token && window.location.pathname !== '/login') {
       this.navigate('/login');
       return null;
     }
