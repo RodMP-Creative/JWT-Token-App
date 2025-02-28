@@ -33,7 +33,9 @@ class AuthService {
       return !!token && !this.isTokenExpired(token);
     } catch (error) {
       console.error('Invalid token:', error);
-      this.navigate('/login');
+      if (window.location.pathname !== '/login') {
+        this.navigate('/login');
+      }
       return false;
     }
   }
