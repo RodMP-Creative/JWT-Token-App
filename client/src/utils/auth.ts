@@ -1,4 +1,4 @@
-import { jwtDecode,  JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 class AuthService {
   navigate: (path: string) => void;
@@ -41,15 +41,16 @@ class AuthService {
   }
 
   getToken(): string {
-    // TODO: return the token from localStorage
+    // Todo: Return the token from localStorage and navigate to login if undefined
     const token = localStorage.getItem('token');
     if (!token) {
+      this.navigate('/login');
       return '';
     }
     return token;
   }
 
-  login(idToken : string) {
+  login(idToken: string) {
     // TODO: set the token to localStorage
     localStorage.setItem('token', idToken);
     this.navigate('/');
