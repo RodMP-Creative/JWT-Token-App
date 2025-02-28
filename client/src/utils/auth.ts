@@ -26,7 +26,16 @@ class AuthService {
   loggedIn() {
     // TODO: return a value that indicates if the user is logged in
     const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
+    if (!token) {
+      return false;
+    }
+    try {
+      return !!token && !this.isTokenExpired(token);
+    } catch (error) {
+      console.error('Invalid token:', error);
+      this.navigate('/login');
+      return false;
+    }
   }
   
   isTokenExpired(token: string) {
@@ -43,6 +52,10 @@ class AuthService {
   getToken(): string | null {
     // Return the token from localStorage
     const token = localStorage.getItem('token');
+    if (!token) {
+      this.navigate('/login');
+      return null;
+    }
     return token;
   }
 
